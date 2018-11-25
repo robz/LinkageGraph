@@ -1,14 +1,31 @@
 /* @flow */
 
 type Point = {x: number, y: number};
+type Ref = string;
 
+// Linkages are specified by two data structures:
+// - a config, which records all of the linkage's parameters as numbers
+// - a list of segments that each reference parameters listed in the config
+//
+// Splitting the linkage into these two structures makes it possible to describe
+// relationships between segments, like when one segment computes a point that
+// another segment attaches to. These relationships can be used to build up a
+// computational graph, where each segment is a node that computes a part of the
+// linkage.
+//
+// References also make it possible to force two different segments to share the
+// same length or point.
+//
+// Angles (inputs to motors) probably don't need to be in this config, since
+// they aren't shared between segments, but keeping them in the config is
+// convenient for computation.
 type Config = {
-  points: Map<string, Point>,
-  lengths: Map<string, number>,
-  angles: Map<string, number>,
+  points: Map<Ref, Point>,
+  lengths: Map<Ref, number>,
+  angles: Map<Ref, number>,
 };
 
-type Refs<In, Out> = {[$Keys<In & Out>]: string};
+type Refs<In, Out> = {[$Keys<In & Out>]: Ref};
 type Segment<In, Out> = {
   // returns null if the system doesn't yet contain the data required to
   // compute this segment
@@ -40,8 +57,8 @@ type SegmentRefs =
   | {t: 'p', refs: Refs<PassiveSegmentIn, PassiveSegmentOut>};
 
 type Linkage = {
-  staticPoints: {[string]: Point},
-  lengths: {[string]: number},
+  staticPoints: {[Ref]: Point},
+  lengths: {[Ref]: number},
   segments: Array<SegmentRefs>,
 };
 
@@ -132,8 +149,9 @@ function forwardSegment<In, Out>(
 // this will be O(n) if the segments are topologically sorted,
 // and at most O(n^2) otherwise
 // throws errors if either
-//   - the input config wasn't seeded with required data
+//   - the input config wasn't seeded with required static data
 //   - the segments cannot all be computed due to an incomplete dependency graph
+//   - a particular segment is mathematically impossible to compute
 // if successful, the outputs are recorded in config as a side effect
 function forwardConfig(config: Config, segments: Array<SegmentRefs>): void {
   let progress = true;
@@ -161,7 +179,7 @@ function forwardConfig(config: Config, segments: Array<SegmentRefs>): void {
   }
 }
 
-function forwardLinkage(linkage: Linkage, angles: Map<string, number>): Config {
+function forwardLinkage(linkage: Linkage, angles: Map<Ref, number>): Config {
   const points = Object.keys(linkage.staticPoints).reduce(
     (m, pRef) => m.set(pRef, linkage.staticPoints[pRef]),
     new Map(),
