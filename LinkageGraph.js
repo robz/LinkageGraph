@@ -80,9 +80,14 @@ const MotorSegment: Segment<MotorSegmentIn, MotorSegmentOut> = {
     };
   },
 
-  forward(input) {
-    // TODO: implement this
-    return {p2: {x: 0, y: 0}};
+  forward({p0, p1, theta, len}) {
+    const alpha = Math.atan2(p1.y - p0.y, p1.x - p0.x);
+    return {
+      p2: {
+        x: p0.x + len * Math.cos(alpha + theta),
+        y: p0.y + len * Math.sin(alpha + theta),
+      },
+    };
   },
 
   setOutput(config, refs, output) {
@@ -110,9 +115,19 @@ const PassiveSegment: Segment<PassiveSegmentIn, PassiveSegmentOut> = {
     };
   },
 
-  forward(input) {
-    // TODO: implement this
-    return {p2: {x: 0, y: 0}};
+  forward({p0, p1, len0, len1}) {
+    const alpha = Math.atan2(p1.y - p0.y, p1.x - p0.x);
+    const len2 = Math.sqrt((p1.y - p0.y) ** 2 + (p1.x - p0.x) ** 2);
+    // law of cosines
+    const theta = Math.acos(
+      (len1 ** 2 - len0 ** 2 - len2 ** 2) / (-2 * len0 * len2),
+    );
+    return {
+      p2: {
+        x: p0.x + len0 * Math.cos(alpha + theta),
+        y: p0.y + len0 * Math.sin(alpha + theta),
+      },
+    };
   },
 
   setOutput(config, refs, output) {
