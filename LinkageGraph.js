@@ -1,5 +1,7 @@
 /* @flow */
 
+const {getX} = require('./utils');
+
 type Point = {x: number, y: number};
 type Ref = string;
 
@@ -61,14 +63,6 @@ type Linkage = {
   lengths: {[Ref]: number},
   segments: Array<SegmentRefs>,
 };
-
-function getX<K, V>(m: Map<K, V>, key: K): V {
-  const v = m.get(key);
-  if (v == null) {
-    throw new Error('no value for key ' + String(key));
-  }
-  return v;
-}
 
 const MotorSegment: Segment<MotorSegmentIn, MotorSegmentOut> = {
   getInput(config, refs) {
@@ -174,19 +168,23 @@ function forwardConfig(config: Config, segments: Array<SegmentRefs>): void {
   while (progress) {
     progress = false;
     for (const segment of segments) {
+      let segmentProgress = false;
       switch (segment.t) {
         case 'm':
-          progress =
-            forwardSegment(config, MotorSegment, segment.refs) || progress;
+          segmentProgress = forwardSegment(config, MotorSegment, segment.refs);
           break;
         case 'p':
-          progress =
-            forwardSegment(config, PassiveSegment, segment.refs) || progress;
+          segmentProgress = forwardSegment(
+            config,
+            PassiveSegment,
+            segment.refs,
+          );
           break;
       }
-    }
-    if (progress) {
-      computedSegments += 1;
+      if (segmentProgress) {
+        computedSegments += 1;
+      }
+      progress = progress || segmentProgress;
     }
   }
   if (computedSegments !== segments.length) {
