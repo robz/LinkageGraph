@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "record_coverage":
+      "for file in $(find src -name '*.js'); do yarn flow coverage $file; done > coverage_summary.txt && yarn jest --coverage >> coverage_summary.txt && cat coverage_summary.txt"
+  },
   "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.26.0",
