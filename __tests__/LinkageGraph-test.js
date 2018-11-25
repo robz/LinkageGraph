@@ -42,3 +42,23 @@ it('computes passive segments', () => {
   expect(p2.x).toBeCloseTo(1, 5);
   expect(p2.y).toBeCloseTo(1, 5);
 });
+
+it('computes passive segments the other way by reversing points', () => {
+  /*
+   *  p1   p0
+   *  .    .
+   *   \   |
+   *     \ |
+   *       .
+   *       p2
+   */
+  const input = {
+    p0: {x: 1, y: 0},
+    p1: {x: 0, y: 0},
+    len0: 1,
+    len1: Math.sqrt(2),
+  };
+  const {p2} = PassiveSegment.forward(input);
+  expect(p2.x).toBeCloseTo(1, 5);
+  expect(p2.y).toBeCloseTo(-1, 5);
+});
