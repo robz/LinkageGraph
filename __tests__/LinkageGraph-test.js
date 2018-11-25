@@ -69,6 +69,14 @@ it('computes passive segments the other way by reversing points', () => {
 });
 
 it('computes a square linkage', () => {
+  /*
+   *      p2  len1  p3
+   *      . _______ .
+   *      |         |
+   * len0 |         | len2
+   *      . _______ .
+   *      p0        p1
+   */
   const angles = new Map().set('theta0', Math.PI / 2);
   const linkage = {
     staticPoints: {
