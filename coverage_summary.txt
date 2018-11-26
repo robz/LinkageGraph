@@ -5,7 +5,7 @@ $ /Users/robertnevels/Development/LinkageGraph/node_modules/.bin/flow coverage s
 Covered: 96.97% (32 of 33 expressions)
 
 $ /Users/robertnevels/Development/LinkageGraph/node_modules/.bin/flow coverage src/__tests__/LinkageGraph-test.js
-Covered: 100.00% (206 of 206 expressions)
+Covered: 100.00% (299 of 299 expressions)
 
 $ /Users/robertnevels/Development/LinkageGraph/node_modules/.bin/flow coverage src/utils.js
 Covered: 100.00% (20 of 20 expressions)
@@ -14,7 +14,7 @@ $ /Users/robertnevels/Development/LinkageGraph/node_modules/.bin/jest --coverage
 -----------------|----------|----------|----------|----------|-------------------|
 File             |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
 -----------------|----------|----------|----------|----------|-------------------|
-All files        |    94.55 |    83.33 |      100 |    94.55 |                   |
- LinkageGraph.js |       94 |    81.25 |      100 |       94 |       102,151,191 |
+All files        |      100 |      100 |      100 |      100 |                   |
+ LinkageGraph.js |      100 |      100 |      100 |      100 |                   |
  utils.js        |      100 |      100 |      100 |      100 |                   |
 -----------------|----------|----------|----------|----------|-------------------|
